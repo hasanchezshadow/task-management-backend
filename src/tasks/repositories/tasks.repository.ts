@@ -6,6 +6,7 @@ import { UpdateTaskDto } from '../dto/update-task.dto';
 import { Injectable } from '@nestjs/common';
 import { GetTasksFilterDto } from '../dto/get-tasks-filter.dto';
 import { User } from 'src/auth/entities/user.entity';
+import { GetUser } from 'src/auth/decorators/get-user.decorator';
 
 @Injectable()
 export class TasksRepository extends Repository<Task> {
@@ -38,8 +39,8 @@ export class TasksRepository extends Repository<Task> {
     return this.save(task);
   }
 
-  getTasks(filterDto?: GetTasksFilterDto): Promise<Task[]> {
-    const query = this.createQueryBuilder('task');
+  getTasks(filterDto: GetTasksFilterDto, user: User): Promise<Task[]> {
+    const query = this.createQueryBuilder('task').where({ user });
     const { status, search } = filterDto;
 
     if (status) {
@@ -48,7 +49,7 @@ export class TasksRepository extends Repository<Task> {
 
     if (search) {
       query.andWhere(
-        'LOWER(task.title) LIKE LOWER(:search) OR LOWER(task.description) LIKE LOWER(:search)',
+        '(LOWER(task.title) LIKE LOWER(:search) OR LOWER(task.description) LIKE LOWER(:search))',
         { search: `%${search}%` },
       );
     }
