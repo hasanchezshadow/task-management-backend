@@ -3,13 +3,18 @@ import { Task } from '../entities/task.entity';
 import { CreateTaskDto } from '../dto/create-task.dto';
 import { TaskStatus } from '../task.status.enum';
 import { UpdateTaskDto } from '../dto/update-task.dto';
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { GetTasksFilterDto } from '../dto/get-tasks-filter.dto';
 import { User } from 'src/auth/entities/user.entity';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
 
 @Injectable()
 export class TasksRepository extends Repository<Task> {
+  private logger = new Logger('TasksRepository', { timestamp: true });
+
   constructor(private dataSource: DataSource) {
     super(Task, dataSource.createEntityManager());
   }
@@ -53,8 +58,17 @@ export class TasksRepository extends Repository<Task> {
         { search: `%${search}%` },
       );
     }
-
-    const tasks = query.getMany();
-    return tasks;
+    try {
+      const tasks = query.getMany();
+      return tasks;
+    } catch (error) {
+      this.logger.error(
+        `Failed to get tasks for user "${
+          user.username
+        }". Filters: ${JSON.stringify(filterDto)}`,
+        error.stack,
+      );
+      throw new InternalServerErrorException();
+    }
   }
 }
