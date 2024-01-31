@@ -7,10 +7,26 @@ import { User } from './entities/user.entity';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { configValidationSchema } from 'src/config.schema';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      envFilePath: `.env.stage.${process.env.STAGE}`,
+      validationSchema: configValidationSchema,
+    }),
     PassportModule.register({ defaultStrategy: 'jwt' }),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get('JWT_SECRET'),
+        signOptions: {
+          expiresIn: configService.get('JWT_EXPIRATION_TIME'),
+        },
+      }),
+    }),
     JwtModule.register({
       secret: '2rq<xiR:#%|NF!W',
       signOptions: {
