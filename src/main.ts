@@ -9,10 +9,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new TransformInterceptor());
   app.enableCors({
-    origin: [
-      'http://localhost:3001',
-      'https://hasanchezshadow.github.io',
-    ],
+    origin: ['http://localhost:3001', 'https://hasanchezshadow.github.io'],
   });
   // app.useLogger(logger);
   const port = process.env.APP_PORT;
