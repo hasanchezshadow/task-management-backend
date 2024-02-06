@@ -20,12 +20,12 @@ import { configValidationSchema } from './config.schema';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
-        const isProduction = configService.get('STAGE') === 'prod';
+        // const isProduction = configService.get('STAGE') === 'prod';
         return <DataSourceOptions>{
-          ssl: isProduction,
-          extra: {
-            ssl: isProduction ? { rejectUnauthorized: true } : null,
-          },
+          // ssl: isProduction,
+          // extra: {
+          //   ssl: isProduction ? { rejectUnauthorized: true } : null,
+          // },
           type: configService.get('DB_TYPE'),
           host: configService.get('DB_HOST'),
           port: configService.get('DB_PORT'),
