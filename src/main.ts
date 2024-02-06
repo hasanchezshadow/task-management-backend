@@ -10,6 +10,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new TransformInterceptor());
   app.enableCors({
     origin: ['http://localhost:3001', 'https://hasanchezshadow.github.io'],
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
   });
   // app.useLogger(logger);
   const port = process.env.APP_PORT;
