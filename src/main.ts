@@ -9,7 +9,11 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new TransformInterceptor());
   app.enableCors({
-    origin: ['http://localhost:3001', 'https://hasanchezshadow.github.io'],
+    origin: [
+      'http://localhost:3001',
+      'https://hasanchezshadow.github.io',
+      'https://task-management-frontend-4lvx.onrender.com',
+    ],
     methods: ['GET', 'POST', 'PATCH', 'DELETE'],
   });
   // app.useLogger(logger);
