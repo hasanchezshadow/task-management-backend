@@ -19,8 +19,13 @@ import { configValidationSchema } from './config.schema';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) =>
-        <DataSourceOptions>{
+      useFactory: (configService: ConfigService) => {
+        const isProduction = configService.get('STAGE') === 'prod';
+        return <DataSourceOptions>{
+          ssl: isProduction,
+          extra: {
+            ssl: isProduction ? { rejectUnauthorized: true } : null,
+          },
           type: configService.get('DB_TYPE'),
           host: configService.get('DB_HOST'),
           port: configService.get('DB_PORT'),
@@ -29,7 +34,8 @@ import { configValidationSchema } from './config.schema';
           database: configService.get('DB_NAME'),
           autoLoadEntities: true,
           synchronize: true,
-        },
+        };
+      },
     }),
   ],
   controllers: [AppController],
