@@ -9,7 +9,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { GetTasksFilterDto } from '../dto/get-tasks-filter.dto';
-import { User } from 'src/auth/entities/user.entity';
+import { User } from '../../auth/entities/user.entity';
 
 @Injectable()
 export class TasksRepository extends Repository<Task> {
